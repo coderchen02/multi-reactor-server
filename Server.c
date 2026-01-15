@@ -96,6 +96,7 @@ int epollRun(int lfd)
             struct FdInfo* info = (struct FdInfo*)malloc(sizeof(struct FdInfo));
             int fd = evs[i].data.fd;
             info->epfd = epfd;
+            info->fd=fd;
             if (fd == lfd)
             {
                 // 建立新连接 accept
