@@ -4,6 +4,6 @@
 extern struct Dispatcher EpollDispatcher;
 struct EventLoop
 {
-    Dispatcher* Dispatcher;
+    struct Dispatcher* Dispatcher;
     void* dispatcherData;
 };
