@@ -98,11 +98,11 @@ static int epollDispatch(struct EventLoop* evLoop,int timeout)//单位： s
         }
         if(events & EPOLLIN)
         {
-
+            eventActivate(evLoop,fd,ReadEvent);
         }
         if(events & EPOLLOUT)
         {
-
+            eventActivate(evLoop,fd,WriteEvent);
         }
     }
     return 0;

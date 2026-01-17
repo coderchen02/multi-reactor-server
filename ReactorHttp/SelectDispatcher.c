@@ -15,7 +15,7 @@ static int selectDispatch(struct EventLoop* evLoop,int timeout);//单位： s
 static int selectClear(struct EventLoop* evLoop);
 static void setFdSet(struct Channel* channel,struct SelectData * data);
 static void clearFdSet(struct Channel* channel,struct SelectData * data);
-struct Dispatcher PollDispatcher={
+struct Dispatcher SelectDispatcher={
     selectInit,
     selectAdd,
     selectRemove,
@@ -78,7 +78,7 @@ static int selectModify(struct Channel* channel,struct EventLoop* evLoop)
     clearFdSet(channel,data);
     return 0;
 }
-static int epollDispatch(struct EventLoop* evLoop,int timeout)//单位： s
+static int selectDispatch(struct EventLoop* evLoop,int timeout)//单位： s
 {
     struct SelectData* data=(struct SelectData*)malloc(sizeof(struct SelectData));
     struct timeval val;
@@ -96,17 +96,17 @@ static int epollDispatch(struct EventLoop* evLoop,int timeout)//单位： s
     {
         if(FD_ISSET(i,&rdtmp))
         {
-            
+            eventActivate(evLoop,i,ReadEvent);
         }
         if(FD_ISSET(i,&wrtmp))
         {
-
+            eventActivate(evLoop,i,WriteEvent);
         }
 
     }
     return 0;
 }
-static int pollClear(struct EventLoop* evLoop)
+static int selectClear(struct EventLoop* evLoop)
 {
     struct SelectData* data=(struct SelectData*)malloc(sizeof(struct SelectData));
 
