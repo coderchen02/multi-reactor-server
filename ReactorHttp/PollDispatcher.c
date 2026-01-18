@@ -1,5 +1,7 @@
 #include "Dispatcher.h"
 #include<poll.h>
+#include<stdlib.h>
+#include<stdio.h>
 
 #define Max 1024
 struct PollData
@@ -80,6 +82,8 @@ static int pollRemove(struct Channel* channel,struct EventLoop* evLoop)
             break;
         }
     }
+    //通过channel释放TcpConnection资源
+    channel->destoryCallback(channel->arg);
     if(i>=Max)
     {
         return -1;
@@ -145,4 +149,5 @@ static int pollClear(struct EventLoop* evLoop)
     struct PollData* data=(struct   PollData*)evLoop->dispatcherData;
 
     free(data);
+    return 0;
 }

@@ -1,6 +1,7 @@
 #include "EventLoop.h"
 #include<assert.h>
 #include<sys/socket.h>
+#include<unistd.h>
 struct EventLoop *eventLoopInit()
 {
     return eventLoopInitEx(NULL);
