@@ -1,6 +1,6 @@
 #pragma once
-#include"EventLoop.h"
-#include"ThreadPool.h"
+#include "EventLoop.h"
+#include "ThreadPool.h"
 
 struct Listener
 {
@@ -16,9 +16,9 @@ struct TcpServer
     struct Listener* listener;
 };
 
-//初始化
-struct TcpServer* tcpServerInit(unsigned short port,int threadNum);
-//初始化监听
+// 初始化
+struct TcpServer* tcpServerInit(unsigned short port, int threadNum);
+// 初始化监听
 struct Listener* listenerInit(unsigned short port);
-//启动服务器
+// 启动服务器
 void tcpServerRun(struct TcpServer* server);

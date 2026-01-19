@@ -1,18 +1,19 @@
 #include "ThreadPool.h"
 #include <assert.h>
-#include<stdlib.h>
-struct ThreadPool *threadPoolInit(struct EventLoop *mainLoop, int count)
+#include <stdlib.h>
+
+struct ThreadPool* threadPoolInit(struct EventLoop* mainLoop, int count)
 {
-    struct ThreadPool *pool = (struct ThreadPool *)malloc(sizeof(struct ThreadPool));
+    struct ThreadPool* pool = (struct ThreadPool*)malloc(sizeof(struct ThreadPool));
     pool->index = 0;
     pool->isStart = false;
     pool->mainLoop = mainLoop;
     pool->threadNum = count;
-    pool->workerThreads = (struct WorkerThread *)malloc(sizeof(struct WorkerThread) * count);
+    pool->workerThreads = (struct WorkerThread*)malloc(sizeof(struct WorkerThread) * count);
     return pool;
 }
 
-void threadPoolRun(struct ThreadPool *pool)
+void threadPoolRun(struct ThreadPool* pool)
 {
     assert(pool && !pool->isStart);
     if (pool->mainLoop->threadID != pthread_self())
@@ -22,7 +23,7 @@ void threadPoolRun(struct ThreadPool *pool)
     pool->isStart = true;
     if (pool->threadNum)
     {
-        for (int i = 0; i < pool->threadNum; i++)
+        for (int i = 0; i < pool->threadNum; ++i)
         {
             workerThreadInit(&pool->workerThreads[i], i);
             workerThreadRun(&pool->workerThreads[i]);
@@ -30,16 +31,15 @@ void threadPoolRun(struct ThreadPool *pool)
     }
 }
 
-struct EventLoop *takeWorkerEventLoop(struct ThreadPool *pool)
+struct EventLoop* takeWorkerEventLoop(struct ThreadPool* pool)
 {
     assert(pool->isStart);
-    // 判断运行的这个线程是不是主线程
     if (pool->mainLoop->threadID != pthread_self())
     {
         exit(0);
     }
-    // 从线程池中找一个子线程，然后取出里面的反应堆实例
-    struct EventLoop *evLoop = pool->mainLoop;
+    // 从线程池中找一个子线程, 然后取出里边的反应堆实例
+    struct EventLoop* evLoop = pool->mainLoop;
     if (pool->threadNum > 0)
     {
         evLoop = pool->workerThreads[pool->index].evLoop;
