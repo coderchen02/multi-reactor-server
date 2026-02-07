@@ -9,6 +9,7 @@ int TcpConnection::processRead(void* arg)
     TcpConnection* conn = static_cast<TcpConnection*>(arg);
     // 接收数据
     int socket = conn->m_channel->getSocket();
+    // 读取 socket 数据到读缓冲区（调用 Buffer 的 socketRead 方法）
     int count = conn->m_readBuf->socketRead(socket);
 
     Debug("接收到的http请求数据: %s", conn->m_readBuf->data());
@@ -48,7 +49,7 @@ int TcpConnection::processWrite(void* arg)
 {
     Debug("开始发送数据了(基于写事件发送)....");
     TcpConnection* conn = static_cast<TcpConnection*>(arg);
-    // 发送数据
+    // 发送写缓冲区数据到 socket
     int count = conn->m_writeBuf->sendData(conn->m_channel->getSocket());
     if (count > 0)
     {
@@ -79,13 +80,16 @@ int TcpConnection::destroy(void* arg)
 TcpConnection::TcpConnection(int fd, EventLoop* evloop)
 {
     m_evLoop = evloop;
+    // 初始化读写缓冲区（10240 字节 = 10KB）
     m_readBuf = new Buffer(10240);
     m_writeBuf = new Buffer(10240);
-    // http
+    // 初始化 HTTP 解析/响应组件
     m_request = new HttpRequest;
     m_response = new HttpResponse;
     m_name = "Connection-" + to_string(fd);
+    // 创建 Channel：监听读事件，绑定三个回调，参数为 this
     m_channel = new Channel(fd, FDEvent::ReadEvent, processRead, processWrite, destroy, this);
+    // 将 Channel 添加到 EventLoop 的任务队列（注册 fd 到 IO 多路复用）
     evloop->addTask(m_channel, ElemType::ADD);
 }
 

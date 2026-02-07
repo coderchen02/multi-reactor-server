@@ -9,10 +9,10 @@ using namespace std;
 
 // 处理该节点中的channel的方式
 enum class ElemType:char{ADD, DELETE, MODIFY};
-// 定义任务队列的节点
+// 定义任务队列的节点 封装“操作类型 + Channel”
 struct ChannelElement
 {
-    ElemType type;   // 如何处理该节点中的channel
+    ElemType type;   // 操作类型：添加/删除/修改
     Channel* channel;
 };
 class Dispatcher;
@@ -25,14 +25,14 @@ public:
     ~EventLoop();
     // 启动反应堆模型
     int run();
-    // 处理别激活的文件fd
+    // 处理触发的 IO 事件
     int eventActive(int fd, int event);
     // 添加任务到任务队列
     int addTask(struct Channel* channel, ElemType type);
     // 处理任务队列中的任务
     int processTaskQ();
     // 处理dispatcher中的节点
-    int add(Channel* channel);
+    int add(Channel* channel);  // 转发给 Dispatcher 添加 fd
     int remove(Channel* channel);
     int modify(Channel* channel);
     // 释放channel

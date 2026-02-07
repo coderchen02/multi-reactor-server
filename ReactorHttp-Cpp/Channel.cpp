@@ -10,7 +10,7 @@ Channel::Channel(int fd, FDEvent events, handleFunc readFunc, handleFunc writeFu
     writeCallback = writeFunc;
     destroyCallback = destroyFunc;
 }
-
+// 启用/禁用写事件
 void Channel::writeEventEnable(bool flag)
 {
     if (flag)

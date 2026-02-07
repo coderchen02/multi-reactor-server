@@ -16,7 +16,7 @@ EventLoop::EventLoop() : EventLoop(string())
 EventLoop::EventLoop(const string threadName)
 {
     m_isQuit = true;    // 默认没有启动
-    m_threadID = this_thread::get_id();
+    m_threadID = this_thread::get_id(); // 绑定当前线程 ID
     m_threadName = threadName == string() ? "MainThread" : threadName;
     m_dispatcher = new SelectDispatcher(this);
     // map
@@ -53,11 +53,11 @@ int EventLoop::run()
     {
         return -1;
     }
-    // 循环进行事件处理
+    // 事件循环核心：死循环处理 IO 事件 + 任务队列
     while (!m_isQuit)
     {
         m_dispatcher->dispatch();    // 超时时长 2s
-        processTaskQ();
+        processTaskQ();  // 处理任务队列（增/删/改 Channel）
     }
     return 0;
 }
@@ -71,6 +71,7 @@ int EventLoop::eventActive(int fd, int event)
     // 取出channel
     Channel* channel = m_channelMap[fd];
     assert(channel->getSocket() == fd);
+    // 触发读事件回调
     if (event & (int)FDEvent::ReadEvent && channel->readCallback)
     {
         channel->readCallback(const_cast<void*>(channel->getArg()));

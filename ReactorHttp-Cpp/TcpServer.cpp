@@ -20,10 +20,10 @@ int TcpServer::acceptConnection(void* arg)
 TcpServer::TcpServer(unsigned short port, int threadNum)
 {
     m_port = port;
-    m_mainLoop = new EventLoop;
-    m_threadNum = threadNum;
-    m_threadPool = new ThreadPool(m_mainLoop, threadNum);
-    setListen();
+    m_mainLoop = new EventLoop;  // 创建主Reactor（MainLoop）
+    m_threadNum = threadNum;     // 从Reactor的数量（线程池大小）
+    m_threadPool = new ThreadPool(m_mainLoop, threadNum);  // 创建线程池
+    setListen();                // 初始化监听socket
 }
 
 void TcpServer::setListen()

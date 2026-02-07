@@ -7,11 +7,11 @@
 #include <unistd.h>
 #include <strings.h>
 #include <sys/socket.h>
-
+// 构造：初始化缓冲区容量，分配内存并清空
 Buffer::Buffer(int size):m_capacity(size)
 {
-    m_data = (char*)malloc(size);
-    bzero(m_data, size);
+    m_data = (char*)malloc(size);   // 分配指定大小的内存
+    bzero(m_data, size);            // 清空内存（避免脏数据）
 }
 
 Buffer::~Buffer()

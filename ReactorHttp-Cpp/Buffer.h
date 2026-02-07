@@ -40,9 +40,9 @@ public:
         return m_readPos;
     }
 private:
-    char* m_data;
-    int m_capacity;
-    int m_readPos = 0;
-    int m_writePos = 0;
+    char* m_data;   // 缓冲区内存起始地址
+    int m_capacity; // 缓冲区总容量
+    int m_readPos = 0;// 读指针：下一个要读取的位置（初始0）
+    int m_writePos = 0;// 写指针：下一个要写入的位置（初始0）
 };
 
